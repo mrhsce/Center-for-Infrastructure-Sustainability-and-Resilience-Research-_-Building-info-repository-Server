@@ -1,0 +1,65 @@
+CREATE TABLE `User` (
+	`id`	INTEGER PRIMARY KEY AUTOINCREMENT,
+	`name`	TEXT,
+	`family`	TEXT,
+	`username`	TEXT NOT NULL,
+	`password`	TEXT NOT NULL
+);
+
+CREATE TABLE `Enums` (
+	`id`	INTEGER PRIMARY KEY AUTOINCREMENT,
+	`name`	TEXT NOT NULL,
+	`titile`	TEXT NOT NULL,
+	`type`	TEXT NOT NULL,
+	`value`	REAL
+);
+
+CREATE TABLE `Surveys` (
+	`id`	INTEGER PRIMARY KEY AUTOINCREMENT,
+	`title`	TEXT NOT NULL,
+	`description`	TEXT
+);
+
+CREATE TABLE `RawQuestions` (
+	`id`	INTEGER PRIMARY KEY AUTOINCREMENT,
+	`title`	TEXT NOT NULL,
+	`type`	INTEGER NOT NULL,
+	`surveyId`	INTEGER NOT NULL,
+	FOREIGN KEY(`type`) REFERENCES `Enums`(`id`),
+	FOREIGN KEY(`surveyId`) REFERENCES `Surveys`(`id`)
+);
+
+CREATE TABLE `RawSelections` (
+	`id`	INTEGER PRIMARY KEY AUTOINCREMENT,
+	`title`	TEXT NOT NULL,
+	`type`	INTEGER NOT NULL,
+	`rawQuestionId`	INTEGER NOT NULL,
+	FOREIGN KEY(`type`) REFERENCES `Enums`(`id`),
+	FOREIGN KEY(`rawQuestionId`) REFERENCES `RawQuestions`(`id`)
+);
+
+CREATE TABLE `Executions` (
+	`id`	INTEGER PRIMARY KEY AUTOINCREMENT,
+	`title`	TEXT NOT NULL,
+	`date`	TEXT,
+	`surveyId`	INTEGER NOT NULL,
+	FOREIGN KEY(`surveyId`) REFERENCES `Surveys`(`id`)
+);
+
+CREATE TABLE `Questions` (
+	`id`	INTEGER PRIMARY KEY AUTOINCREMENT,
+	`title`	TEXT NOT NULL,
+	`type`	INTEGER NOT NULL,
+	`answer`	TEXT NOT NULL,
+	`executionId`	INTEGER NOT NULL,
+	FOREIGN KEY(`type`) REFERENCES `Enums`(`id`)
+);
+
+CREATE TABLE `Selections` (
+	`id`	INTEGER PRIMARY KEY AUTOINCREMENT,
+	`title`	TEXT NOT NULL,
+	`type`	INTEGER NOT NULL,
+	`questionId`	INTEGER NOT NULL,
+	FOREIGN KEY(`questionId`) REFERENCES `Questions`(`id`),
+	FOREIGN KEY(`type`) REFERENCES `Enums`(`id`)
+);

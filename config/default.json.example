@@ -1,0 +1,87 @@
+// Example of how config/default.json COULD be structured using environment variables
+// However, the config package does NOT automatically support process.env variables
+// For now, placeholders are used in default.json and you must replace them manually or use a custom loader
+//
+// If you want to use environment variables with the config package, you have two options:
+//
+// OPTION 1: Use environment-specific JSON files
+// Create files like:
+// - config/development.json (for development)
+// - config/production.json (for production)
+// And set NODE_ENV=production or NODE_ENV=development
+//
+// OPTION 2: Use a custom loader (add this to server.js before loading config)
+// require("dotenv").config();
+// process.env.NODE_CONFIG = JSON.stringify({
+//   "APAMAN": {
+//     "dbConfig": {
+//       "user": process.env.DB_USER,
+//       "password": process.env.DB_PASSWORD,
+//       // ... etc
+//     }
+//   }
+// });
+
+// For this project, we recommend:
+// 1. Copy this file and create config/production.json
+// 2. Replace all PLACEHOLDER_* values with your actual credentials
+// 3. Add config/production.json to .gitignore (already done)
+// 4. Set NODE_ENV=production when deploying
+
+{
+  "APAMAN": {
+    "dbConfig": {
+      "user": "your_actual_db_username",
+      "password": "your_actual_db_password",
+      "server": "your_actual_db_server_ip",
+      "port": 2575,
+      "database": "your_actual_db_name",
+      "pool": {
+        "max": 10000,
+        "min": 1,
+        "idleTimeoutMillis": 30000
+      },
+      "options": {
+        "encrypt": true
+      },
+      "stream": false,
+      "parseJSON": true
+    },
+    "serverConfig": {
+      "port": 80,
+      "testPort": 4000,
+      "SN": "/api-v1"
+    },
+    "uploadConfig": {
+      "path": "/views/images"
+    },
+    "fcmConfig": {
+      "host": "fcm.googleapis.com",
+      "path": "/fcm/send",
+      "authorization": "key=YOUR_FCM_SERVER_KEY_HERE"
+    },
+    "asanPardakhtConfig": {
+      "URL_SERVICE": "https://services.asanpardakht.net/paygate/merchantservices.asmx?wsdl",
+      "URL_HOST_INFO": "https://services.asanpardakht.net/utils/hostinfo.asmx?wsdl",
+      "URL_SERVER_TIME": "https://services.asanpardakht.net/paygate/servertime.asmx?wsdl",
+      "URL_PAYMENT": "https://asan.shaparak.ir",
+      "URL_STATUS": "https://services.asanpardakht.net/paygate/statuswatch.asmx?wsdl",
+      "MERCHANT_ID": "your_merchant_id",
+      "MERCHANT_CONFIG_ID": "your_config_id",
+      "USERNAME": "your_username",
+      "PASSWORD": "your_password",
+      "EncryptionKey": "your_base64_encryption_key",
+      "EncryptionVector": "your_base64_encryption_vector"
+    },
+    "payPecConfig": {
+      "URL_SERVICE": "https://pec.shaparak.ir/NewIPGServices/Sale/SaleService.asmx?wsdl",
+      "URL_REVERS": "https://pec.shaparak.ir/NewIPGServices/Reverse/ReversalService.asmx?wsdl",
+      "URL_PAYMENT": "https://pec.shaparak.ir/NewIPG/?Token=",
+      "URL_CONFIRM": "https://pec.shaparak.ir/NewIPGServices/Confirm/ConfirmService.asmx?wsdl",
+      "URL_MULTI_SERVICE": "https://pec.shaparak.ir/NewIPGServices/MultiplexedSale/OnlineMultiplexedSalePaymentService.asmx?wsdl",
+      "LOGIN_ACCOUNT": "your_paypec_login_account",
+      "TERMINAL_CODE": "your_terminal_code"
+    }
+  }
+}
+

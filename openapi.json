@@ -1,0 +1,3074 @@
+{
+  "openapi": "3.0.0",
+  "servers": [
+    {
+      "url": "http://localhost/"
+    },
+    {
+      "url": "https://localhost/"
+    }
+  ],
+  "info": {
+    "description": "This is a sample server Petstore server.  You can find out more about     Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).      For this sample, you can use the api key `special-key` to test the authorization     filters.",
+    "version": "1.0.0-oas3",
+    "title": "Montaman API Document",
+    "termsOfService": "http://monta.ir/",
+    "contact": {
+      "email": "apiteam@swagger.io"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "tags": [
+    {
+      "name": "user",
+      "description": "user Authenticate and jwt"
+    },
+    {
+      "name": "survey",
+      "description": "Survey about Building"
+    },
+    {
+      "name": "Account",
+      "description": "Account detail"
+    },
+    {
+      "name": "payment",
+      "description": "payment detail"
+    },
+    {
+      "name": "Facility",
+      "description": "Facility of Building"
+    }
+  ],
+  "paths": {
+    "/user/login": {
+      "post": {
+        "tags": ["user"],
+        "summary": "Authenticate user and response jwt",
+        "description": "get userName & Pass(null)",
+        "operationId": "userLogin",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "token": {
+                "description": "jwt token for auth api",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/xml": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LoginRes"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LoginRes"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid username/password supplied"
+          },
+          "500": {
+            "description": "server Error"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Login"
+              }
+            }
+          },
+          "description": "The user name for login",
+          "required": true
+        }
+      }
+    },
+    "/user/balance/{BuildingID}.{UnitID}": {
+      "get": {
+        "tags": ["user"],
+        "summary": "Get the user balance transaction",
+        "description": "show Balance of unit",
+        "operationId": "userBalanceShow",
+        "parameters": [
+          {
+            "name": "BuildingID",
+            "in": "path",
+            "description": "The id of building that needs to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "UnitID",
+            "in": "path",
+            "description": "The unit of building that needs to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserBalance"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Failed!!!"
+          },
+          "500": {
+            "description": "server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/setting/defaultCharge": {
+      "post": {
+        "tags": ["setting"],
+        "summary": "Set the list of default charge",
+        "description": "Using this endpoint one can insert or update the default charge list for units of a building",
+        "operationId": "defaultChargeInsertOrUpdate",
+        "parameters": [
+          {
+            "name": "BuildingID",
+            "in": "body",
+            "description": "The id of building that needs to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "UnitID",
+            "in": "body",
+            "description": "The unit of building that needs to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Data",
+            "in": "body",
+            "description": "The list of default charge for units",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/DefaultCharge"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DefaultRes"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Failed!!!"
+          },
+          "500": {
+            "description": "server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/unit": {
+      "get": {
+        "tags": ["unit"],
+        "summary": "Get the list of all units",
+        "description": "Using this endpoint one can take the complete list of all units of a building",
+        "operationId": "unitSelectAll",
+        "parameters": [
+          {
+            "name": "BuildingID",
+            "in": "path",
+            "description": "The id of building that needs to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "UnitID",
+            "in": "path",
+            "description": "The unit of building that needs to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Unit"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Failed!!!"
+          },
+          "500": {
+            "description": "server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/survey/{BuildingID}.{UnitID}": {
+      "get": {
+        "tags": ["survey"],
+        "summary": "Get survey list",
+        "description": "",
+        "operationId": "getSurveyList",
+        "parameters": [
+          {
+            "name": "BuildingID",
+            "in": "path",
+            "description": "The id of building that needs to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "UnitID",
+            "in": "path",
+            "description": "The unit of building that needs to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Survey"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad data"
+          },
+          "404": {
+            "description": "Building not found"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/cost/": {
+      "post": {
+        "tags": ["cost", "old vsersion"],
+        "summary": "Create a new cost item",
+        "description": "",
+        "operationId": "addCost",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Cost object that needs to be added",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Cost"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "400": {
+            "description": "x-access-token not set"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/cost/Confirm": {
+      "post": {
+        "tags": ["cost", "old vsersion"],
+        "summary": "Get",
+        "description": "",
+        "operationId": "confirmCost",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "400": {
+            "description": "Invalid BuildingId supplied"
+          },
+          "404": {
+            "description": "Building not found"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/cost/Header/{apartment_ID}": {
+      "get": {
+        "tags": ["cost", "old vsersion"],
+        "summary": "Get",
+        "description": "",
+        "operationId": null,
+        "parameters": null,
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "400": {
+            "description": "Invalid BuildingId supplied"
+          },
+          "404": {
+            "description": "Building not found"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/cost/type": {
+      "get": {
+        "tags": ["cost", "new vsersion"],
+        "summary": "Get a list of costType enums",
+        "description": "",
+        "operationId": "getCostTypes",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CostType"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Failed!!!"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": ["cost", "new vsersion"],
+        "summary": "Get",
+        "description": "",
+        "operationId": null,
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Cost object that needs to be added",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/CostType"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": ""
+          },
+          "401": {
+            "description": "Authorization Failed!!!"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/cost/class": {
+      "get": {
+        "tags": ["cost", "new vsersion"],
+        "summary": "Get a list of costClass enums",
+        "description": "",
+        "operationId": "getCostClasses",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EnumType"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Failed!!!"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/cost/calculate": {
+      "get": {
+        "tags": ["cost", "new vsersion"],
+        "summary": "Get a list of costCalculate enums",
+        "description": "",
+        "operationId": "getCostCalculates",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EnumType"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Failed!!!"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/cost/occupation": {
+      "get": {
+        "tags": ["cost", "new vsersion"],
+        "summary": "Get a list of costOccupation enums",
+        "description": "",
+        "operationId": "getCostOccupation",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EnumType"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Failed!!!"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/cost/addResult": {
+      "post": {
+        "tags": ["cost", "new vsersion"],
+        "summary": "Get",
+        "description": "",
+        "operationId": "addCostResult",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "CostResult object that needs to be added",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/CostResult"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": ""
+          },
+          "401": {
+            "description": "Authorization Failed!!!"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/cost/add": {
+      "post": {
+        "tags": ["cost", "old vsersion"],
+        "summary": "Create a new cost item",
+        "description": "",
+        "operationId": "addCost",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Cost object that needs to be added",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Cost"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": ""
+          },
+          "401": {
+            "description": "Authorization Failed!!!"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/cost/list/{BuildingID}.{UnitID}": {
+      "get": {
+        "tags": ["cost", "new vsersion"],
+        "summary": "Get",
+        "description": "",
+        "operationId": "getCostList",
+        "parameters": [
+          {
+            "name": "BuildingID",
+            "in": "path",
+            "description": "The id of building that needs to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "UnitID",
+            "in": "path",
+            "description": "The unit of building that needs to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReturnedCost"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Failed!!!"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/cost/edit/{BuildingID}.{UnitID}.{CalculationHeaderID}": {
+      "get": {
+        "tags": ["cost", "new vsersion"],
+        "summary": "Get",
+        "description": "Get Detial of cost for edit",
+        "operationId": "getCostForEdit",
+        "parameters": [
+          {
+            "name": "BuildingID",
+            "in": "path",
+            "description": "The id of building that needs to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "UnitID",
+            "in": "path",
+            "description": "The unit of building that needs to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "CalculationHeaderID",
+            "in": "path",
+            "description": "The unit of building that needs to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReturnedCostEdit"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Failed!!!"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/suggestion/": {
+      "post": {
+        "tags": ["suggestion", "new vsersion"],
+        "summary": "Create a new suggestion",
+        "description": "",
+        "operationId": "addSuggestion",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Cost object that needs to be added",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Suggestion"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": ""
+          },
+          "401": {
+            "description": "Authorization Failed!!!"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/suggestion/{BuildingID}.{UnitID}": {
+      "get": {
+        "tags": ["suggestion", "new vsersion"],
+        "summary": "Get the list of all building suggestions",
+        "description": "",
+        "operationId": "getSuggestions",
+        "parameters": [
+          {
+            "name": "BuildingID",
+            "in": "path",
+            "description": "The id of building that needs to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "UnitID",
+            "in": "path",
+            "description": "The unit of building that needs to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Suggestion"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Failed!!!"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/announce/{BuildingID}.{UnitID}": {
+      "get": {
+        "tags": ["announce"],
+        "summary": "Get the list of all announcements",
+        "description": "Using this endpoint one can gives the complete list of all announcements of a building",
+        "operationId": "announceSelectAll",
+        "parameters": [
+          {
+            "name": "BuildingID",
+            "in": "path",
+            "description": "The id of building that needs to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "UnitID",
+            "in": "path",
+            "description": "The unit of building that needs to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AnnouncementDetails"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Failed!!!"
+          },
+          "500": {
+            "description": "server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": ["announce"],
+        "summary": "Create a new announcement",
+        "description": "Using this endpoint one can create a new announcement",
+        "operationId": "addAnnouncement",
+        "parameters": [
+          {
+            "name": "BuildingID",
+            "in": "path",
+            "description": "The id of building that needs to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "UnitID",
+            "in": "path",
+            "description": "The unit of building that needs to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Cost object that needs to be added",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/AnnouncementDetails"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AnnouncementResult"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Failed!!!"
+          },
+          "500": {
+            "description": "server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/announce/{AnnounceID}/{BuildingID}.{UnitID}": {
+      "get": {
+        "tags": ["announce"],
+        "summary": "Get the list of all items of an announcements",
+        "description": "Using this endpoint one can gives the complete list of all items inside an announcements of a building having the id",
+        "operationId": "announceItemSelectAll",
+        "parameters": [
+          {
+            "name": "AnnounceID",
+            "in": "path",
+            "description": "The id of announcement whose items needs to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "BuildingID",
+            "in": "path",
+            "description": "The id of building that needs to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "UnitID",
+            "in": "path",
+            "description": "The unit of building that needs to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AnnouncementItem"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Failed!!!"
+          },
+          "500": {
+            "description": "server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/announce/forAnnouncement/defaultCharge/{PeriodDetailID}.{FormID}.{BuildingID}.{UnitID}": {
+      "get": {
+        "tags": ["announce"],
+        "summary": "Get the list of all items to form an announcement",
+        "description": "Using this endpoint one can get the desired items to form an announcements for a building",
+        "operationId": "itemSelectForAnnounceDefaultCharge",
+        "parameters": [
+          {
+            "name": "PeriodDetailID",
+            "in": "path",
+            "description": "The id of announcement whose items needs to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "FormID",
+            "in": "path",
+            "description": "The id of announcement whose items needs to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "BuildingID",
+            "in": "path",
+            "description": "The id of building that needs to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "UnitID",
+            "in": "path",
+            "description": "The unit of building that needs to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AnnouncementItem"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Failed!!!"
+          },
+          "500": {
+            "description": "server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/announce/forAnnouncement/calculationHeader/{CostClassID}/{PeriodDetailID}.{CalculationHeaderIDs}.{BuildingID}.{UnitID}": {
+      "get": {
+        "tags": ["announce"],
+        "summary": "Get the list of all items to form an announcement",
+        "description": "Using this endpoint one can get the desired items to form an announcements for a building",
+        "operationId": "itemSelectForAnnounceCalculationHeader",
+        "parameters": [
+          {
+            "name": "CostClassID",
+            "in": "path",
+            "description": "The id of announcement whose items needs to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "PeriodDetailID",
+            "in": "path",
+            "description": "The id of announcement whose items needs to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "CalculationHeaderIDs",
+            "in": "path",
+            "description": "The id of announcement whose items needs to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "BuildingID",
+            "in": "path",
+            "description": "The id of building that needs to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "UnitID",
+            "in": "path",
+            "description": "The unit of building that needs to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AnnouncementItem"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Failed!!!"
+          },
+          "500": {
+            "description": "server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/acc/balance/{BuildingID}.{UnitID}": {
+      "get": {
+        "tags": ["Account"],
+        "summary": "Get the list of all items of transaction",
+        "description": "show Balance of unit",
+        "operationId": "unitBalanceShow",
+        "parameters": [
+          {
+            "name": "BuildingID",
+            "in": "path",
+            "description": "The id of building that needs to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "UnitID",
+            "in": "path",
+            "description": "The unit of building that needs to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UnitBalance"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Failed!!!"
+          },
+          "500": {
+            "description": "server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/acc/payType": {
+      "get": {
+        "tags": ["Account"],
+        "summary": "Get the list of Payment Type",
+        "description": "show Payment type",
+        "operationId": "paymentTypeShow",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EnumType"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Failed!!!"
+          },
+          "500": {
+            "description": "server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/acc/{BuildingID}.{UnitID}": {
+      "get": {
+        "tags": ["Account"],
+        "summary": "Get the list of Building Account",
+        "description": "show Account Building",
+        "operationId": "buildingAccount",
+        "parameters": [
+          {
+            "name": "BuildingID",
+            "in": "path",
+            "description": "The id of building that needs to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "UnitID",
+            "in": "path",
+            "description": "The unit of building that needs to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Account"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Failed!!!"
+          },
+          "500": {
+            "description": "server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/pay/{BuildingID}/{FormID}.{UnitID}.{HasPaid}.{PayUserID}.{PayUnitID}": {
+      "get": {
+        "tags": ["payment"],
+        "summary": "Get List Announcement for pay",
+        "description": "Get List Announcement for pay",
+        "operationId": "getCostForPay",
+        "parameters": [
+          {
+            "name": "BuildingID",
+            "in": "path",
+            "description": "The id of building that needs to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "FormID",
+            "in": "path",
+            "description": "Admin pay or user pay",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "UnitID",
+            "in": "path",
+            "description": "The unit of building that needs to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "HasPaid",
+            "in": "path",
+            "description": ".",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "PayUserID",
+            "in": "path",
+            "description": "admin Pay",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "PayUnitID",
+            "in": "path",
+            "description": "admin Pay",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReturnedPayment"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Failed!!!"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/pay": {
+      "post": {
+        "tags": ["payment"],
+        "summary": "insert payment",
+        "description": "add(insert) payment log",
+        "operationId": "insetPayment",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PaymentRes"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Failed!!!"
+          },
+          "500": {
+            "description": "server Error"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Payment"
+              }
+            }
+          },
+          "description": "The user name for login",
+          "required": true
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": ["payment"],
+        "summary": "update payment",
+        "description": "update payment log",
+        "operationId": "updatePayment",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DefaultRes"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Failed!!!"
+          },
+          "500": {
+            "description": "server Error"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PaymentUpdate"
+              }
+            }
+          },
+          "description": "The user name for login",
+          "required": true
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/pay/manually": {
+      "post": {
+        "tags": ["payment"],
+        "summary": "payment manually",
+        "description": "payment manually",
+        "operationId": "paymentManually",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DefaultRes"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Failed!!!"
+          },
+          "500": {
+            "description": "server Error"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PaymentManual"
+              }
+            }
+          },
+          "description": "The payment from admin whit card2card/cash",
+          "required": true
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/user/search/{BuildingID}/{Mobile}.{Name}.{UnitNumber}": {
+      "get": {
+        "tags": ["user"],
+        "summary": "find user",
+        "description": "search user",
+        "operationId": "userSearch",
+        "parameters": [
+          {
+            "name": "BuildingID",
+            "in": "path",
+            "description": "The id of building that needs to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Mobile",
+            "example": null,
+            "in": "path",
+            "description": "The mobile of user account.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Name",
+            "example": null,
+            "in": "path",
+            "description": "The name of user",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "UnitNumber",
+            "example": null,
+            "in": "path",
+            "description": "The UnitNumber of user",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserSearchRes"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Failed!!!"
+          },
+          "500": {
+            "description": "server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/acc": {
+      "post": {
+        "tags": ["Account"],
+        "summary": "insert / Update / delete of Building Account",
+        "description": "add, Edit or remove Account Building",
+        "operationId": "buildingAccountIsertOrUpdate",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DefaultRes"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Failed!!!"
+          },
+          "500": {
+            "description": "server Error"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Account"
+              }
+            }
+          },
+          "description": "The Account Info",
+          "required": true
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/acc/bank": {
+      "get": {
+        "tags": ["Account"],
+        "summary": "list of bank name",
+        "description": "list of Bank name",
+        "operationId": "enumBank",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EnumType"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Failed!!!"
+          },
+          "500": {
+            "description": "server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/facility": {
+      "post": {
+        "tags": ["Facility"],
+        "summary": "insert / Update / delete of Building Facility",
+        "description": "add, Edit or remove Facility Building",
+        "operationId": "BuildingFacility_InsertOrUpdate",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DefaultRes"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Failed!!!"
+          },
+          "500": {
+            "description": "server Error"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FacilityReq"
+              }
+            }
+          },
+          "description": "The Account Info",
+          "required": true
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/facility/{BuildingID}.{UnitID}.{RoleID}.{IsDisabled}": {
+      "get": {
+        "tags": ["Facility"],
+        "summary": "Get the list of Building Facility",
+        "description": "show Facility Building",
+        "operationId": "BuildingFacility_Select",
+        "parameters": [
+          {
+            "name": "BuildingID",
+            "in": "path",
+            "description": "The id of building that needs to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "UnitID",
+            "in": "path",
+            "description": "The unit of building that needs to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "RoleID",
+            "in": "path",
+            "description": "The RoleID of building that needs to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "IsDisabled",
+            "in": "path",
+            "description": "The state of building that needs to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FacilityRes"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Failed!!!"
+          },
+          "500": {
+            "description": "server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/facility/type": {
+      "get": {
+        "tags": ["Facility"],
+        "summary": "Get a list of Facility Type enums",
+        "description": "",
+        "operationId": "EnumFacility_Select",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FacilityType"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Failed!!!"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/facility/weekDay": {
+      "get": {
+        "tags": ["Facility"],
+        "summary": "Get Enum Day of week",
+        "description": "",
+        "operationId": "EnumWeekDay_Select",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EnumType"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Failed!!!"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/facility/scheduleStatus": {
+      "get": {
+        "tags": ["Facility"],
+        "summary": "Get Enum Schedule Status",
+        "description": "",
+        "operationId": "EnumScheduleStatus_Select",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EnumType"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Failed!!!"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/facility/{BuildingID}.{UnitID}/{RoleID}.{FaciltyID}.{DayOfWeek}": {
+      "get": {
+        "tags": ["Facility"],
+        "summary": "Get Facility by id&day",
+        "description": "",
+        "operationId": "FacilitySchedule_SelectWithFaciltyIDANDDate",
+        "parameters": [
+          {
+            "name": "BuildingID",
+            "in": "path",
+            "description": "The id of building that needs to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "UnitID",
+            "in": "path",
+            "description": "The unit of building that needs to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "RoleID",
+            "in": "path",
+            "description": "The RoleID of building that needs to be fetched.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "FaciltyID",
+            "in": "path",
+            "description": "The facility id that needs to be fetche.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "DayOfWeek",
+            "in": "path",
+            "description": "The DayOfWeek id that needs to be fetche.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FacilityById"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization Failed!!!"
+          },
+          "500": {
+            "description": "server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "DefaultRes": {
+        "type": "object",
+        "required": ["ResultCode", "ResultText"],
+        "properties": {
+          "ResultCode": {
+            "type": "string",
+            "example": 1
+          },
+          "ResultText": {
+            "type": "string",
+            "example": "Done"
+          }
+        }
+      },
+      "Login": {
+        "type": "object",
+        "required": ["username", "HasAuthenticated"],
+        "properties": {
+          "username": {
+            "type": "string",
+            "example": "09398173595"
+          },
+          "password": {
+            "type": "string",
+            "example": "123456"
+          },
+          "PushID": {
+            "type": "string",
+            "description": "FireBase Push notification Token"
+          },
+          "HasAuthenticated": {
+            "type": "boolean",
+            "default": false,
+            "description": "User Status"
+          }
+        },
+        "xml": {
+          "name": "Login"
+        }
+      },
+      "LoginRes": {
+        "type": "object",
+        "required": ["ResultCode", "ResultText"],
+        "properties": {
+          "ResultCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ResultText": {
+            "type": "string",
+            "example": "Done"
+          },
+          "ID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "UserID": {
+            "type": "string"
+          },
+          "NameOfUser": {
+            "type": "string"
+          },
+          "Mobile": {
+            "type": "string"
+          },
+          "Sex": {
+            "type": "boolean"
+          },
+          "NationalCode": {
+            "type": "string"
+          },
+          "BirthDate": {
+            "type": "string"
+          },
+          "HasChangedPassword": {
+            "type": "boolean",
+            "default": true
+          },
+          "UserImage": {
+            "type": "string"
+          },
+          "PushID": {
+            "type": "string"
+          },
+          "BuildingID": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "BuildingName": {
+            "type": "string"
+          },
+          "BuildingTypeID": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "BuildingTypeName": {
+            "type": "string"
+          },
+          "NumberOfFloors": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "NumberOfUnits": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "UnitID": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "UnitNumber": {
+            "type": "string"
+          },
+          "UnitDocumentTypeID": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "UnitDocumentTypeName": {
+            "type": "string"
+          },
+          "FloorNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "IsEmpty": {
+            "type": "boolean"
+          },
+          "Area": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ParkingCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ParkingData": {
+            "type": "string"
+          },
+          "TelCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "TelData": {
+            "type": "string"
+          },
+          "StorageCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "StorageData": {
+            "type": "string"
+          },
+          "RoleID": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "RoleName": {
+            "type": "string"
+          },
+          "UnitDocumetTypeID": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "UnitDocumetTypeName": {
+            "type": "string"
+          },
+          "NumberOfPeople": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "StartDate": {
+            "type": "string"
+          },
+          "EndDate": {
+            "type": "string"
+          },
+          "Form": {
+            "type": "array",
+            "xml": {
+              "name": "Form",
+              "wrapped": true
+            },
+            "items": {
+              "$ref": "#/components/schemas/Form"
+            }
+          }
+        },
+        "xml": {
+          "name": "Pet"
+        }
+      },
+      "Unit": {
+        "type": "object",
+        "properties": {
+          "RowNO": {
+            "type": "integer"
+          },
+          "UnitID": {
+            "type": "integer"
+          },
+          "UnitNumber": {
+            "type": "string"
+          },
+          "Area": {
+            "type": "integer"
+          }
+        }
+      },
+      "Cost": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "costType_ID": {
+            "type": "integer"
+          },
+          "description": {
+            "type": "string"
+          },
+          "totalPrice": {
+            "type": "integer"
+          },
+          "ownerOfCost": {
+            "type": "string"
+          },
+          "forUnit": {
+            "type": "string"
+          },
+          "calculateType_ID": {
+            "type": "integer"
+          },
+          "apartment_ID": {
+            "type": "integer"
+          },
+          "hasConfirmed": {
+            "type": "boolean"
+          },
+          "isDisabled": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ReturnedCost": {
+        "type": "object",
+        "properties": {
+          "ResultCode": {
+            "type": "integer"
+          },
+          "ResultText": {
+            "type": "string"
+          },
+          "CalculationHeaderID": {
+            "type": "string"
+          },
+          "CostTypeID": {
+            "type": "string"
+          },
+          "CostTypeName": {
+            "type": "integer"
+          },
+          "TotalPrice": {
+            "type": "integer"
+          },
+          "StartDate": {
+            "type": "string"
+          },
+          "EndDate": {
+            "type": "string"
+          },
+          "BillNumber": {
+            "type": "integer"
+          },
+          "HasAnnounced": {
+            "type": "boolean"
+          },
+          "PeriodName": {
+            "type": "string"
+          }
+        }
+      },
+      "ReturnedCostEdit": {
+        "type": "object",
+        "properties": {
+          "ResultCode": {
+            "type": "integer"
+          },
+          "ResultText": {
+            "type": "string"
+          },
+          "CostTypeID": {
+            "type": "integer"
+          },
+          "TotalPrice": {
+            "type": "integer"
+          },
+          "BillNumber": {
+            "type": "integer"
+          },
+          "PeriodDetailID": {
+            "type": "integer"
+          },
+          "StartDate": {
+            "type": "string"
+          },
+          "EndDate": {
+            "type": "string"
+          },
+          "Datas": {
+            "type": "array",
+            "xml": {
+              "name": "CalculateOfCost",
+              "wrapped": true
+            },
+            "items": {
+              "$ref": "#/components/schemas/CalculateCostEdit"
+            }
+          }
+        }
+      },
+      "ReturnedPayment": {
+        "type": "object",
+        "properties": {
+          "ResultCode": {
+            "type": "integer"
+          },
+          "ResultText": {
+            "type": "string"
+          },
+          "AnnounceDetailID": {
+            "type": "integer"
+          },
+          "CostClassID": {
+            "type": "integer"
+          },
+          "CostClassName": {
+            "type": "string"
+          },
+          "IsDefault": {
+            "type": "boolean"
+          },
+          "Title": {
+            "type": "string"
+          },
+          "RecordNumber": {
+            "type": "integer"
+          },
+          "LastPayDate": {
+            "type": "string"
+          },
+          "Price": {
+            "type": "integer"
+          }
+        }
+      },
+      "CalculateCostEdit": {
+        "type": "object",
+        "properties": {
+          "unitID": {
+            "type": "integer"
+          },
+          "unitNumber": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "integer"
+          },
+          "numberOfPeople": {
+            "type": "integer"
+          },
+          "area": {
+            "type": "integer"
+          },
+          "parkingCount": {
+            "type": "integer"
+          },
+          "isEmpty": {
+            "type": "boolean"
+          },
+          "calculateTypeUnitCountPrice": {
+            "type": "integer"
+          },
+          "calculateTypeNumberOfPeoplePrice": {
+            "type": "integer"
+          },
+          "calculateTypeAreaPrice": {
+            "type": "integer"
+          },
+          "calculatePrice": {
+            "type": "integer"
+          }
+        }
+      },
+      "CostType": {
+        "type": "object",
+        "properties": {
+          "ID": {
+            "type": "string"
+          },
+          "Name": {
+            "type": "string"
+          },
+          "IsPeriodical": {
+            "type": "boolean"
+          }
+        }
+      },
+      "EnumType": {
+        "type": "object",
+        "properties": {
+          "ID": {
+            "type": "string"
+          },
+          "Name": {
+            "type": "string"
+          },
+          "PersianName": {
+            "type": "string"
+          }
+        }
+      },
+      "CostResult": {
+        "type": "object",
+        "properties": {
+          "BuildingID": {
+            "type": "integer"
+          },
+          "UnitID": {
+            "type": "integer"
+          },
+          "CostTypeID": {
+            "type": "integer"
+          },
+          "Price": {
+            "type": "integer"
+          },
+          "PeriodDetailID": {
+            "type": "integer"
+          }
+        }
+      },
+      "Form": {
+        "type": "object",
+        "properties": {
+          "formID": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "formName": {
+            "type": "string"
+          },
+          "persianName": {
+            "type": "string"
+          },
+          "writeAccess": {
+            "type": "boolean"
+          },
+          "deleteAccess": {
+            "type": "boolean"
+          },
+          "destination": {
+            "type": "string"
+          },
+          "icon": {
+            "type": "string"
+          },
+          "hasShow": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Suggestion": {
+        "type": "object",
+        "properties": {
+          "BuildingID": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "UnitID": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "ID": {
+            "type": "integer"
+          },
+          "Title": {
+            "type": "string"
+          },
+          "Description": {
+            "type": "string"
+          },
+          "IsDisabled": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Announcement": {
+        "type": "object",
+        "properties": {
+          "ID": {
+            "type": "string"
+          },
+          "CostClassID": {
+            "type": "string"
+          },
+          "CostClassName": {
+            "type": "string"
+          },
+          "Title": {
+            "type": "string"
+          },
+          "IsDefault": {
+            "type": "boolean"
+          },
+          "RecordNumber": {
+            "type": "string"
+          },
+          "LastPayDate": {
+            "type": "string"
+          },
+          "TotalPeopleNumber": {
+            "type": "integer"
+          },
+          "TotalPeopleNumberPaid": {
+            "type": "integer"
+          }
+        }
+      },
+      "AnnouncementDetails": {
+        "type": "object",
+        "properties": {
+          "PeriodDetailID": {
+            "type": "integer"
+          },
+          "CostClassID": {
+            "type": "integer"
+          },
+          "IsDefault": {
+            "type": "integer"
+          },
+          "CalculationHeaderIDs": {
+            "type": "string"
+          },
+          "Title": {
+            "type": "string"
+          },
+          "RecordNumber": {
+            "type": "integer"
+          },
+          "LastPayDate": {
+            "type": "string"
+          }
+        }
+      },
+      "AnnouncementItem": {
+        "type": "object",
+        "properties": {
+          "RowNo": {
+            "type": "string"
+          },
+          "UnitID": {
+            "type": "string"
+          },
+          "UnitNumber": {
+            "type": "string"
+          },
+          "UserID": {
+            "type": "string"
+          },
+          "HasPaid": {
+            "type": "boolean"
+          },
+          "Name": {
+            "type": "string"
+          },
+          "Price": {
+            "type": "integer"
+          }
+        }
+      },
+      "DefaultCharge": {
+        "type": "object",
+        "required": ["ResultCode", "ResultText"],
+        "properties": {
+          "UnitID": {
+            "type": "integer",
+            "example": 1133
+          },
+          "Price": {
+            "type": "integer",
+            "example": 500
+          }
+        }
+      },
+      "AnnouncementResult": {
+        "type": "object",
+        "required": ["ResultCode", "ResultText"],
+        "properties": {
+          "ResultCode": {
+            "type": "string",
+            "example": 1
+          },
+          "ResultText": {
+            "type": "string",
+            "example": "Done"
+          }
+        }
+      },
+      "Survey": {
+        "type": "object",
+        "required": ["ResultCode", "ResultText"],
+        "properties": {
+          "ResultCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ResultText": {
+            "type": "string",
+            "example": "Done"
+          },
+          "ID": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "Title": {
+            "type": "string"
+          },
+          "BuildingID": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "Question": {
+            "type": "string"
+          },
+          "QuestionType": {
+            "type": "boolean"
+          },
+          "AnswerOne": {
+            "type": "string"
+          },
+          "AnswerTwo": {
+            "type": "string"
+          },
+          "AnswerThree": {
+            "type": "string"
+          },
+          "AnswerFour": {
+            "type": "string"
+          },
+          "StartFromDate": {
+            "type": "string"
+          },
+          "AnswerOneCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "AnswerTwoCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "AnswerThreeCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "AnswerFourCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "CreatedAtDatetime": {
+            "type": "string"
+          },
+          "HasAccessToSubmit": {
+            "type": "boolean"
+          },
+          "HasAccessToViewResult": {
+            "type": "boolean"
+          },
+          "BuildingSurveyBuilding": {
+            "type": "array",
+            "xml": {
+              "name": "BuildingSurveyBuilding",
+              "wrapped": true
+            },
+            "items": {
+              "$ref": "#/components/schemas/BuildingId"
+            }
+          },
+          "BuildingSurveyDestinationRole": {
+            "type": "array",
+            "xml": {
+              "name": "BuildingSurveyDestinationRole",
+              "wrapped": true
+            },
+            "items": {
+              "$ref": "#/components/schemas/BuildingId"
+            }
+          },
+          "ViewResultDestinationRoleID": {
+            "type": "array",
+            "xml": {
+              "name": "ViewResultDestinationRoleID",
+              "wrapped": true
+            },
+            "items": {
+              "$ref": "#/components/schemas/BuildingId"
+            }
+          },
+          "MyOpinion": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "RoleID": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "RoleName": {
+            "type": "string"
+          },
+          "UnitDocumetTypeID": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "UnitDocumetTypeName": {
+            "type": "string"
+          },
+          "NumberOfPeople": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "StartDate": {
+            "type": "string"
+          },
+          "EndDate": {
+            "type": "string"
+          }
+        }
+      },
+      "BuildingId": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "UnitBalance": {
+        "type": "object",
+        "properties": {
+          "UnitID": {
+            "type": "integer"
+          },
+          "BuildingID": {
+            "type": "integer"
+          },
+          "Bed": {
+            "type": "integer"
+          },
+          "Bes": {
+            "type": "integer"
+          },
+          "CreatedAtDatetime": {
+            "type": "string"
+          },
+          "Type": {
+            "type": "string"
+          },
+          "Title": {
+            "type": "string"
+          }
+        }
+      },
+      "UserBalance": {
+        "type": "object",
+        "properties": {
+          "UnitID": {
+            "type": "integer"
+          },
+          "UnitBalance": {
+            "type": "integer"
+          }
+        }
+      },
+      "Account": {
+        "type": "object",
+        "required": ["IsGateway"],
+        "properties": {
+          "ID": {
+            "type": "integer"
+          },
+          "BuildingID": {
+            "type": "integer"
+          },
+          "BankID": {
+            "type": "integer"
+          },
+          "AccountNo": {
+            "type": "string",
+            "example": "123-654121-65441-1"
+          },
+          "AccountName": {
+            "type": "string"
+          },
+          "CardNo": {
+            "type": "string"
+          },
+          "ShebaNo": {
+            "type": "string"
+          },
+          "Description": {
+            "type": "string"
+          },
+          "IsDisabled": {
+            "type": "integer",
+            "example": 0
+          },
+          "Percents": {
+            "type": "integer"
+          },
+          "IsGateway": {
+            "type": "integer",
+            "example": 0
+          },
+          "RoleID": {
+            "type": "integer"
+          },
+          "Balance": {
+            "type": "integer"
+          },
+          "UnitID": {
+            "type": "integer"
+          }
+        }
+      },
+      "Payment": {
+        "type": "object",
+        "required": [
+          "AnnounceDetailID",
+          "BankGatewayID",
+          "PaymentTypeID",
+          "TotalPrice"
+        ],
+        "properties": {
+          "AnnounceDetailID": {
+            "type": "integer"
+          },
+          "BankGatewayID": {
+            "type": "integer",
+            "example": 1
+          },
+          "PaymentTypeID": {
+            "type": "integer",
+            "example": 1,
+            "description": "card to card/chash"
+          },
+          "TotalPrice": {
+            "type": "integer"
+          }
+        }
+      },
+      "PaymentUpdate": {
+        "type": "object",
+        "required": ["username", "HasAuthenticated"],
+        "properties": {
+          "ID": {
+            "type": "integer",
+            "description": "get from insert payment"
+          },
+          "BankReference": {
+            "type": "string"
+          },
+          "RefID": {
+            "type": "string"
+          },
+          "Status": {
+            "type": "integer",
+            "description": "1: success / -1: failed"
+          },
+          "CardNo": {
+            "type": "string"
+          },
+          "PayGateID": {
+            "type": "string"
+          },
+          "ResultID": {
+            "type": "integer",
+            "description": "asanPardakht:1100"
+          },
+          "VerificationID": {
+            "type": "integer",
+            "description": "asanPardakht:500"
+          },
+          "ReconcilationId": {
+            "type": "integer",
+            "description": "asanPardakht:600"
+          }
+        }
+      },
+      "PaymentRes": {
+        "type": "object",
+        "required": ["ResultCode", "ResultText"],
+        "properties": {
+          "ResultCode": {
+            "type": "string",
+            "example": 1
+          },
+          "ResultText": {
+            "type": "string",
+            "example": "Done"
+          },
+          "PaymentID": {
+            "type": "integer"
+          }
+        }
+      },
+      "PaymentManual": {
+        "type": "object",
+        "required": [
+          "AnnounceDetailID",
+          "RoleID",
+          "BuildingAccountID",
+          "BankReference",
+          "PaymentTypeID",
+          "TotalPrice",
+          "BuildingID",
+          "UnitID"
+        ],
+        "properties": {
+          "AnnounceDetailID": {
+            "type": "integer"
+          },
+          "RoleID": {
+            "type": "integer"
+          },
+          "BuildingAccountID": {
+            "type": "integer"
+          },
+          "PaymentTypeID": {
+            "type": "integer",
+            "example": 1,
+            "description": "card to card/chash"
+          },
+          "TotalPrice": {
+            "type": "integer"
+          },
+          "BankReference": {
+            "type": "string"
+          },
+          "CardNo": {
+            "type": "string"
+          },
+          "Description": {
+            "type": "string"
+          },
+          "BuildingID": {
+            "type": "integer"
+          },
+          "UnitID": {
+            "type": "integer"
+          }
+        }
+      },
+      "UserSearchRes": {
+        "type": "object",
+        "properties": {
+          "UserID": {
+            "type": "integer"
+          },
+          "Name": {
+            "type": "string"
+          },
+          "Mobile": {
+            "type": "string"
+          },
+          "UnitID": {
+            "type": "integer"
+          },
+          "UnitNumber": {
+            "type": "integer"
+          },
+          "RoleID": {
+            "type": "integer"
+          },
+          "RoleName": {
+            "type": "string"
+          }
+        }
+      },
+      "FacilityReq": {
+        "type": "object",
+        "required": ["FacilityID"],
+        "properties": {
+          "ID": {
+            "type": "integer"
+          },
+          "BuildingID": {
+            "type": "integer"
+          },
+          "FacilityID": {
+            "type": "integer"
+          },
+          "Image": {
+            "type": "string"
+          },
+          "IsScheduled": {
+            "type": "integer"
+          },
+          "Tel": {
+            "type": "string"
+          },
+          "Description": {
+            "type": "string"
+          },
+          "IsDisabled": {
+            "type": "integer",
+            "example": 0
+          },
+          "RoleID": {
+            "type": "integer"
+          },
+          "UnitID": {
+            "type": "integer"
+          }
+        }
+      },
+      "FacilityRes": {
+        "type": "object",
+        "properties": {
+          "FacilityID": {
+            "type": "integer"
+          },
+          "Name": {
+            "type": "string"
+          },
+          "PersianName": {
+            "type": "string"
+          },
+          "Image": {
+            "type": "string"
+          },
+          "IsScheduled": {
+            "type": "integer"
+          },
+          "Tel": {
+            "type": "string"
+          },
+          "Description": {
+            "type": "string"
+          },
+          "IsDisabled": {
+            "type": "integer",
+            "example": 0
+          }
+        }
+      },
+      "FacilityType": {
+        "type": "object",
+        "properties": {
+          "ID": {
+            "type": "string"
+          },
+          "Name": {
+            "type": "string"
+          },
+          "PersianName": {
+            "type": "string"
+          },
+          "DefaultImage": {
+            "type": "string"
+          }
+        }
+      },
+      "FacilityById": {
+        "type": "object",
+        "properties": {
+          "ID": {
+            "type": "integer"
+          },
+          "DateID": {
+            "type": "integer"
+          },
+          "Name": {
+            "type": "string"
+          },
+          "FromHour": {
+            "type": "string"
+          },
+          "ToHour": {
+            "type": "string"
+          },
+          "ScheduleStatusID": {
+            "type": "integer"
+          },
+          "GenderType": {
+            "type": "boolean"
+          },
+          "Price": {
+            "type": "integer"
+          },
+          "Description": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
